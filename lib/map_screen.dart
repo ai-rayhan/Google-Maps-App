@@ -32,7 +32,7 @@ class MapScreenState extends State<MapScreen> {
       updateMarkerAndPolyline(LatLng(currentLocation!.latitude!, currentLocation!.longitude!));
       mapController!.animateCamera(CameraUpdate.newLatLng(LatLng(currentLocation!.latitude!, currentLocation!.longitude!)));
     } catch (e) {
-      print("Error: $e");
+      debugPrint("Error: $e");
     }
   }
 
@@ -71,7 +71,7 @@ class MapScreenState extends State<MapScreen> {
 
   void showInfoDialog(BuildContext context, LatLng latLng) {
     showAdaptiveDialog(
-      barrierColor: Color.fromARGB(0, 104, 104, 104),
+      barrierColor: const Color.fromARGB(0, 104, 104, 104),
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
