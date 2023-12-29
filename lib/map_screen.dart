@@ -1,4 +1,6 @@
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -6,10 +8,10 @@ class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
 
   @override
-  MapScreenState createState() => MapScreenState();
+  _MapScreenState createState() => _MapScreenState();
 }
 
-class MapScreenState extends State<MapScreen> {
+class _MapScreenState extends State<MapScreen> {
   GoogleMapController? mapController;
   Location location = Location();
   LocationData? currentLocation;
@@ -35,7 +37,8 @@ class MapScreenState extends State<MapScreen> {
   }
 
   void startLocationUpdates() {
-    location.onLocationChanged.listen((LocationData locationData) {
+    Timer.periodic(const Duration(seconds: 10), (timer) async {
+      LocationData locationData = await location.getLocation();
       updateMarkerAndPolyline(LatLng(locationData.latitude!, locationData.longitude!));
     });
   }
@@ -48,7 +51,7 @@ class MapScreenState extends State<MapScreen> {
           markerId: const MarkerId("myLocation"),
           position: latLng,
           onTap: () {
-            showInfoWindow(latLng);
+            showInfoDialog(context, latLng);
           },
         ),
       );
@@ -66,16 +69,20 @@ class MapScreenState extends State<MapScreen> {
     });
   }
 
-  void showInfoWindow(LatLng latLng) {
-    mapController!.showMarkerInfoWindow(const MarkerId("myLocation"));
-  }
-
-  InfoWindow myInfoWindow(BuildContext context, LatLng latLng) {
-    return InfoWindow(
-      title: 'My current location',
-      snippet: 'Latitude: ${latLng.latitude}, Longitude: ${latLng.longitude}',
-      onTap: () {
-        // Handle onTap for the info window if needed
+  void showInfoDialog(BuildContext context, LatLng latLng) {
+    showAdaptiveDialog(
+      barrierColor: Color.fromARGB(0, 104, 104, 104),
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('My current location'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('${latLng.latitude},${latLng.longitude}'),
+            ],
+          ),
+        );
       },
     );
   }
@@ -96,7 +103,6 @@ class MapScreenState extends State<MapScreen> {
         },
         markers: markers,
         polylines: Set<Polyline>.of(polyline != null ? [polyline!] : []),
-       
       ),
     );
   }

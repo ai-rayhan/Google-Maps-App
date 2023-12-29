@@ -1,7 +1,4 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:googlemapsapp/map_screen.dart';
 
 void main() {
@@ -13,8 +10,8 @@ class GoogleMapsApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home:  MapScreen(),
+    return  const MaterialApp(
+      home:   MapScreen(),
     );
   }
 }
